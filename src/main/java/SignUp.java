@@ -47,28 +47,11 @@ public class SignUp implements ActionListener {
 	private JButton btnSubmit;
 	private JRadioButton rdbtnMale,rdbtnFemale;
 	
-	private int id=2;
-	private String firstName="",lastName="",gender="",phone="",email="",password="",confirmPassword="",status="Unactive",role="Standard user";
+	private int id=0;
+	private String firstName="",lastName="",gender="",phone="",email="",password="",confirmPassword="",status="Unactive",role="",remark="";
 	private Date dob=null;
 	private Timestamp timestamp;
-	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SignUp window = new SignUp();
-					window.frame.setVisible(true);
-					
-					
-					//operations.update(2,"Mohsin khan agwan");
-					//operations.delete(8);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	
+	//operations.delete(8);
 	public SignUp() {
 		initialize();
 	}
@@ -225,11 +208,12 @@ public class SignUp implements ActionListener {
 			password = txtPassword.getText();
 			confirmPassword = txtConfirmPassword.getText();
 			status = "Active";
-			
+			role = "Standard user";
+			remark = "Blank";
 			if(!firstName.equals("") && !lastName.equals("") && dob!=null && gender!="" && !phone.equals("") && !email.equals("") && !password.equals("") && !confirmPassword.equals("") && status.equals("Active")) {
 				if(password.equals(confirmPassword)) {
-					//UserDAO userDao = new UserDAO();
-					//int id = userDao.insert(new SignUpPojo(firstName,lastName,gender,timestamp,phone,email,password,status));
+					UserDAO userDao = new UserDAO();
+					int id = userDao.insert(new User(firstName,lastName,gender,dob,phone,email,password,status,role,remark));
 					if(id!=0) {
 						new JOptionPane().showMessageDialog(panelInfo,"Successfully Sigh Up...!");
 						frame.setVisible(false);

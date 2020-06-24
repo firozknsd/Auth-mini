@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
@@ -23,18 +24,7 @@ public class DeactivateAccount extends JPanel implements ActionListener {
 	private JPanel panelDeactivate;
 	
 	private String currentPassword="",comment="";
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DeactivateAccount window = new DeactivateAccount();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 	public DeactivateAccount() {
 		initialize();
 	}
@@ -109,6 +99,7 @@ public class DeactivateAccount extends JPanel implements ActionListener {
 	}
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
+		
 		currentPassword = txtCurrentPassword.getText();
 		
 		if(rdbtnNotUsefull.isSelected()) {
@@ -120,10 +111,18 @@ public class DeactivateAccount extends JPanel implements ActionListener {
 		}
 		
 		if(btnDeactivateAccount==actionEvent.getSource()) {
-			//Take email & password by hibernate method and feel it on place of double quotes
-			if(currentPassword.equals("")) {
-				//UserDAO userDao = new UserDAO();
-				//userDao.updateDeactivateAccount(new User(),"Deactivate",comment);
+			int index = 0;
+			UserDAO userDao = new UserDAO();
+			ArrayList<User> ArrayList = (ArrayList<User>) userDao.list();
+				for(int i=0;i<ArrayList.size();i++) {
+					if(ArrayList.get(i).getPassword().equals(currentPassword)) {
+						index = i;
+					}
+				}
+			if(ArrayList.get(index).getPassword().equals(currentPassword)) {
+				String status = "Deactivate";
+				User user = ArrayList.get(index);
+				userDao.update(user,status,comment);
 				new JOptionPane().showMessageDialog(panelDeactivate,"Your account has been successfully deactivated...!");
 				frame.setVisible(false);
 				new Login();

@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
@@ -20,18 +21,7 @@ public class ChangePassword extends JPanel implements ActionListener {
 	JPanel panelChange;
 	
 	private String currentPassword="",newPassword="",confirmPassword="";
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ChangePassword window = new ChangePassword();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 	public ChangePassword() {
 		initialize();
 	}
@@ -106,12 +96,19 @@ public class ChangePassword extends JPanel implements ActionListener {
 		confirmPassword = txtConfirmPassword.getText();
 		
 		if(btnChangePassword==actionEvent.getSource()) {
-			//Take password by hibernate method and feel it on place of double quotes
-			if(currentPassword.equals("")) {
+			int index = 0;
+			UserDAO userDao = new UserDAO();
+			ArrayList<User> ArrayList = (ArrayList<User>) userDao.list();
+				for(int i=0;i<ArrayList.size();i++) {
+					if(ArrayList.get(i).getPassword().equals(currentPassword)) {
+						index = i;
+					}
+				}
+			if(ArrayList.get(index).getPassword().equals(currentPassword)) {
 				if(newPassword.equals(confirmPassword)) {
-					//UserDAO userDao = new UserDAO();
-					//userDao.update(new User(),newPassword);
-					new JOptionPane().showMessageDialog(panelChange,"Successfully Sigh Up...!");
+					User user = ArrayList.get(index);
+					userDao.update(user,newPassword);
+					new JOptionPane().showMessageDialog(panelChange,"Changed password successfully...!");
 					txtCurrentPassword.setText("");
 					txtNewPassword.setText("");
 					txtConfirmPassword.setText("");

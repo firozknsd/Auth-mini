@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.EventQueue;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,28 +13,23 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+
 import java.awt.CardLayout;
 public class Welcome implements MouseListener,ActionListener {
 	JFrame frame;
 	JLabel lblDeactivateAccount,lblChangePassword;
 	JPanel panelScreen;
 	CardLayout card;
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Welcome window = new Welcome();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	JLabel lblUserList;
+	
 	public Welcome() {
-		initialize();
+		
 	}
-	private void initialize() {
+	public Welcome(String role) {
+		initialize(role);
+	}
+	private void initialize(String role) {
 		
 		frame = new JFrame();
 		frame.setBounds(0,0,1280,760);
@@ -61,14 +57,28 @@ public class Welcome implements MouseListener,ActionListener {
 		lblDeactivateAccount.setBounds(0, 326, 350, 60);
 		menuPanel.add(lblDeactivateAccount);
 		
+		lblUserList = new JLabel("User List");
+		lblUserList.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserList.setForeground(Color.BLACK);
+		lblUserList.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblUserList.setBackground(Color.LIGHT_GRAY);
+		lblUserList.setBounds(0, 387, 350, 60);
+		if(role.equals("Admin")) {
+			menuPanel.add(lblUserList);
+		}
+		
 		lblDeactivateAccount.addMouseListener(this);
 		lblChangePassword.addMouseListener(this);
+		lblUserList.addMouseListener(this);
 		
 		panelScreen = new JPanel();
-		panelScreen.setLayout(new CardLayout());
 		ChangePassword changePassword = new ChangePassword();
+		DeactivateAccount deactivateAccount = new DeactivateAccount();
+		UserList userList = new UserList();
+		panelScreen.setLayout(new CardLayout());
 		panelScreen.add("ChangePassword",changePassword);
-		panelScreen.add("DeactivateAccount",new DeactivateAccount());
+		panelScreen.add("DeactivateAccount",deactivateAccount);
+		panelScreen.add("UserList",userList);
 		panelScreen.setBounds(349, 0, 915, 722);
 		frame.getContentPane().add(panelScreen);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -81,22 +91,37 @@ public class Welcome implements MouseListener,ActionListener {
 			new DeactivateAccount();
 		} else if(lblChangePassword==mouseEvent.getSource()) {
 			new ChangePassword();
+		} else if(lblUserList==mouseEvent.getSource()) {
+			new UserList();
 		}
 	}
 	@Override
 	public void mouseEntered(MouseEvent mouseEvent) {
 		if(lblDeactivateAccount==mouseEvent.getSource()) {
-			lblDeactivateAccount.setBackground(Color.CYAN);
+			lblDeactivateAccount.setFont(new Font("Tahoma", Font.PLAIN, 24));
+			Border blackLine = BorderFactory.createLineBorder(Color.BLACK);
+			lblDeactivateAccount.setBorder(blackLine);
 		} else if(lblChangePassword==mouseEvent.getSource()) {
-			lblChangePassword.setBackground(Color.CYAN);
+			Border blackLine = BorderFactory.createLineBorder(Color.BLACK);
+			lblChangePassword.setBorder(blackLine);
+			lblChangePassword.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		} else if(lblUserList==mouseEvent.getSource()) {
+			Border blackLine = BorderFactory.createLineBorder(Color.BLACK);
+			lblUserList.setBorder(blackLine);
+			lblUserList.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		}
 	}
 	@Override
 	public void mouseExited(MouseEvent mouseEvent) {
 		if(lblDeactivateAccount==mouseEvent.getSource()) {
-			lblDeactivateAccount.setBackground(Color.BLACK);
+			lblDeactivateAccount.setBorder(null);
+			lblDeactivateAccount.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		} else if(lblChangePassword==mouseEvent.getSource()) {
-			lblChangePassword.setBackground(Color.CYAN);
+			lblChangePassword.setBorder(null);
+			lblChangePassword.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		} else if(lblUserList==mouseEvent.getSource()) {
+			lblUserList.setBorder(null);
+			lblUserList.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		}
 	}
 	@Override
@@ -113,8 +138,13 @@ public class Welcome implements MouseListener,ActionListener {
 	public void actionPerformed(ActionEvent actionEvent) {
 		if(lblChangePassword==actionEvent.getSource()) {
 			card.show(panelScreen,"ChangePassword");
+			frame.setTitle("Change password");
 		} else if(lblDeactivateAccount==actionEvent.getSource()) {
 			card.show(panelScreen,"DeactivateAccount");
+			frame.setTitle("Deactivate Account");
+		} else if(lblUserList==actionEvent.getSource()) {
+			card.show(panelScreen,"UserList");
+			frame.setTitle("User list");
 		}
 	}
 }

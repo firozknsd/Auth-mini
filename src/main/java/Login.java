@@ -8,6 +8,7 @@ import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -15,9 +16,9 @@ import java.awt.Color;
 public class Login implements ActionListener {
 	private JFrame frame;
 	private JPanel panelLogin;
-	private JLabel lblEmail_1;
+	private JLabel lblEmail;
 	private JTextField txtEmail;
-	private JLabel lblPassword_1;
+	private JLabel lblPassword;
 	private JPasswordField txtPassword;
 	private JButton btnLogin;
 	private JButton btnSignUp;
@@ -53,20 +54,20 @@ public class Login implements ActionListener {
 		panelLogin.setLayout(null);
 		frame.getContentPane().add(panelLogin);
 		
-		lblEmail_1 = new JLabel("Email");
-		lblEmail_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblEmail_1.setBounds(55, 97, 55, 34);
-		panelLogin.add(lblEmail_1);
+		lblEmail = new JLabel("Email");
+		lblEmail.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblEmail.setBounds(55, 97, 55, 34);
+		panelLogin.add(lblEmail);
 		
 		txtEmail = new JTextField();
 		txtEmail.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		txtEmail.setBounds(55, 142, 200, 39);
 		panelLogin.add(txtEmail);
 		
-		lblPassword_1 = new JLabel("Password ");
-		lblPassword_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblPassword_1.setBounds(55, 207, 83, 34);
-		panelLogin.add(lblPassword_1);
+		lblPassword = new JLabel("Password ");
+		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblPassword.setBounds(55, 207, 83, 34);
+		panelLogin.add(lblPassword);
 		
 		txtPassword = new JPasswordField();
 		txtPassword.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -100,30 +101,38 @@ public class Login implements ActionListener {
 		email = txtEmail.getText();
 		password = txtPassword.getText();
 		
-		//List<User> user = UserDAO.list();
-		
 		if(btnSignUp==actionEvent.getSource()) {
 			frame.setVisible(false);
 			new SignUp();
 		} else if(btnLogin==actionEvent.getSource()) {
+			
+			int index=0;
+			UserDAO userDao = new UserDAO();
+			ArrayList<User> ArrayList = (ArrayList<User>) userDao.list();
+			
+			for(int i=0;i<ArrayList.size();i++) {
+				if(ArrayList.get(i).getEmail().equals(email) && ArrayList.get(i).getPassword().equals(password)) {
+					role = ArrayList.get(i).getRole();
+					index = i;
+				}
+			}
 			if(!email.equals("") && !password.equals("")) {
-				
-				//Take email & password by hibernate method and feel it on place of double quotes
-				if(email.equals("") && password.equals("")) {
-					if(role.equals("Admin")) {
-						frame.setVisible(false);
-						new WelcomeWithUserList();
-					} else if(role.equals("Standard User")) {
-						frame.setVisible(false);
-						new Welcome();
-					} else {
-						new JOptionPane().showMessageDialog(panelLogin,"Something is wrong...!");
-					}
+				if(ArrayList.get(index).getEmail().equals(email) &&  ArrayList.get(index).getPassword().equals(password) && ArrayList.get(index).getStatus().equals("Active")) {
+					frame.setVisible(false);
+					new Welcome(role);
+				} else {
+					new JOptionPane().showMessageDialog(panelLogin,"Something went wrong...!");
 				}
 			} else if(email.equals("")) {
 				new JOptionPane().showMessageDialog(panelLogin,"Enter email...!");
 			} else if(password.equals("")) {
 				new JOptionPane().showMessageDialog(panelLogin,"Enter password...!");
+			} else {
+				if(ArrayList.get(index).getStatus().equals("Deactivate")) {
+					new JOptionPane().showMessageDialog(panelLogin,"Account Not found...!");
+				} else {
+					new JOptionPane().showMessageDialog(panelLogin,"Something went wrong...!");
+				}
 			}
 		}
 	}

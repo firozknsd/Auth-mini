@@ -10,7 +10,7 @@ import javax.persistence.Table;
 public class User {
 	
 	@Id
-	@GeneratedValue		
+	@GeneratedValue	
 	@Column(name="id")
 	private int id;
 	
@@ -41,25 +41,13 @@ public class User {
 	@Column(name="Role")
 	private String role;
 	
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-
-	public String getRemark() {
-		return remark;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
 	@Column(name="Remark")
 	private String remark;
 	
-	public User(String firstName,String lastName,String gender,Date dob,String phone,String email,String password,String status,String role) {
+	public User() {
+		
+	}
+	public User(String firstName,String lastName,String gender,Date dob,String phone,String email,String password,String status,String role,String remark) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.gender = gender;
@@ -69,13 +57,19 @@ public class User {
 		this.password = password;
 		this.status = status;
 		this.role = role;
+		this.remark = remark;
 	}
-	
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 	public String getLastName() {
 		return lastName;
@@ -119,10 +113,16 @@ public class User {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public String getFirstName() {
-		return firstName;
+	public String getRole() {
+		return role;
 	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setRole(String role) {
+		this.role = role;
+	}
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }
