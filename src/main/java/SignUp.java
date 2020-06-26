@@ -9,8 +9,10 @@ import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -18,12 +20,20 @@ import javax.swing.JOptionPane;
 import javax.swing.AbstractListModel;
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.JTextComponent;
+
+import org.jdatepicker.impl.DateComponentFormatter;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.SqlDateModel;
+import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
@@ -31,26 +41,37 @@ import javax.swing.JButton;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.MatteBorder;
+import com.toedter.calendar.demo.DateChooserPanel;
+import com.toedter.calendar.demo.DateChooserPanelBeanInfo;
+import com.toedter.calendar.JCalendarBeanInfo;
+import com.toedter.calendar.JDayChooserBeanInfo;
+import com.toedter.calendar.JYearChooser;
+import javax.swing.SpringLayout;
 
-public class SignUp implements ActionListener {
+public class SignUp extends AbstractFormatter implements ActionListener {
 
 	private JFrame frame;
 	private JPanel panelInfo;
 	private JLabel lblFirstName;
 	private JTextField txtFirstName;
 	private JTextField txtLastName;
-	private JTextField txtDOB;
 	private JTextField txtPhone;
 	private JTextField txtEmail;
 	private JPasswordField txtPassword;
 	private JPasswordField txtConfirmPassword;
 	private JButton btnSubmit;
 	private JRadioButton rdbtnMale,rdbtnFemale;
+	private JDatePanelImpl datePanel;
+	private JDatePickerImpl datePicker;
 	
 	private int id=0;
 	private String firstName="",lastName="",gender="",phone="",email="",password="",confirmPassword="",status="Unactive",role="",remark="";
 	private Date dob=null;
+	private String strDate;
 	private Timestamp timestamp;
+	private final DateChooserPanelBeanInfo dateChooserPanelBeanInfo = new DateChooserPanelBeanInfo();
+	private SpringLayout springLayout;
+	private ButtonGroup buttonGroup;
 	//operations.delete(8);
 	public SignUp() {
 		initialize();
@@ -94,7 +115,7 @@ public class SignUp implements ActionListener {
 		
 		JLabel lblGender = new JLabel("Gender");
 		lblGender.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblGender.setBounds(387, 196, 67, 28);
+		lblGender.setBounds(387, 197, 181, 28);
 		panelInfo.add(lblGender);
 		
 		JLabel lblDateOfBirth = new JLabel("Date of birth ");
@@ -102,17 +123,40 @@ public class SignUp implements ActionListener {
 		lblDateOfBirth.setBounds(84, 197, 105, 28);
 		panelInfo.add(lblDateOfBirth);
 		
-		txtDOB = new JTextField();
-		txtDOB.setToolTipText("YYYY-MM-DD");
-		txtDOB.setText("YYYY-MM-DD");
-		txtDOB.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		txtDOB.setColumns(10);
-		txtDOB.setBounds(84, 236, 192, 39);
-		panelInfo.add(txtDOB);
 		
-		ButtonGroup buttonGroup = new ButtonGroup();
+		JDatePickerImpl datePicker;
+		SqlDateModel model = new SqlDateModel();
+		model.setSelected(true);
+		Properties p = new Properties();
+		p.put("text.day", "Day");
+		p.put("text.month", "Month");
+		p.put("text.year", "Year");
+		JDatePanelImpl panel = new JDatePanelImpl(model,p);
+		datePicker = new JDatePickerImpl(panel,new AbstractFormatter() {
+
+			@Override
+			public Object stringToValue(String text) throws ParseException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public String valueToString(Object value) throws ParseException {
+				if(value !=null) {
+					Calendar cal = (Calendar) value;
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+					strDate = format.format(cal.getTime());
+					return strDate;
+				} return "";
+			}
+			
+		});
+		datePicker.setBounds(84, 233, 192, 39);
+		panelInfo.add(datePicker);
 		
-		rdbtnMale = new JRadioButton("Male");
+		
+		buttonGroup = new ButtonGroup();
+		rdbtnMale = new JRadioButton("Male",true);
 		rdbtnMale.setBackground(Color.LIGHT_GRAY);
 		rdbtnMale.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		rdbtnMale.setBounds(387, 233, 67, 39);
@@ -198,8 +242,7 @@ public class SignUp implements ActionListener {
 				}
 			}
 			try {
-				dob = new SimpleDateFormat("yyyy-MM-dd").parse(txtDOB.getText());
-				timestamp = new Timestamp(dob.getTime());
+				dob = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -210,6 +253,7 @@ public class SignUp implements ActionListener {
 			status = "Active";
 			role = "Standard user";
 			remark = "Blank";
+			System.out.println(dob);
 			if(!firstName.equals("") && !lastName.equals("") && dob!=null && gender!="" && !phone.equals("") && !email.equals("") && !password.equals("") && !confirmPassword.equals("") && status.equals("Active")) {
 				if(password.equals(confirmPassword)) {
 					UserDAO userDao = new UserDAO();
@@ -226,5 +270,15 @@ public class SignUp implements ActionListener {
 				new JOptionPane().showMessageDialog(panelInfo,"Fill all fields");
 			}
 		}
+	}
+	@Override
+	public Object stringToValue(String arg0) throws ParseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String valueToString(Object arg0) throws ParseException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

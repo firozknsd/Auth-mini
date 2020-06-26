@@ -113,7 +113,7 @@ public class ChangePassword extends JPanel implements ActionListener {
 					txtNewPassword.setText("");
 					txtConfirmPassword.setText("");
 				} else {
-					new JOptionPane().showMessageDialog(panelChange,"Password did not match!!");
+					new JOptionPane().showMessageDialog(panelChange,"New password did not match!!");
 				} 
 			} else {
 				new JOptionPane().showMessageDialog(panelChange,"Current password is not correct...!");

@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JPasswordField;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JTextPane;
 import javax.swing.JEditorPane;
@@ -20,7 +21,7 @@ public class DeactivateAccount extends JPanel implements ActionListener {
 	private JPasswordField txtCurrentPassword;
 	private JButton btnDeactivateAccount,btnClear;
 	private JEditorPane commentPane;
-	private JRadioButton rdbtnNotUsefull,rdbtnMovingToOther;
+	private JRadioButton rdbtnNotUsefull,rdbtnMovingToOther,rdbtnAnyOtherReason;
 	private JPanel panelDeactivate;
 	
 	private String currentPassword="",comment="";
@@ -72,27 +73,50 @@ public class DeactivateAccount extends JPanel implements ActionListener {
 		panelDeactivate.add(btnDeactivateAccount);
 		btnDeactivateAccount.addActionListener(this);
 		
-		JLabel lblAnyOtherReason = new JLabel("Any Other Reason");
-		lblAnyOtherReason.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblAnyOtherReason.setBounds(55, 318, 141, 34);
-		panelDeactivate.add(lblAnyOtherReason);
-		
 		commentPane = new JEditorPane();
 		commentPane.setBounds(55, 364, 200, 84);
+		commentPane.setVisible(false);
 		panelDeactivate.add(commentPane);
 		
-		rdbtnNotUsefull = new JRadioButton("Not Usefull");
-		rdbtnNotUsefull.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		rdbtnNotUsefull.setBackground(Color.GRAY);
-		rdbtnNotUsefull.setBounds(55, 252, 103, 29);
-		panelDeactivate.add(rdbtnNotUsefull);
+		ButtonGroup group = new ButtonGroup();
 		
 		rdbtnMovingToOther = new JRadioButton("Moving To Other");
 		rdbtnMovingToOther.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		rdbtnMovingToOther.setBackground(Color.GRAY);
 		rdbtnMovingToOther.setBounds(55, 284, 145, 27);
 		panelDeactivate.add(rdbtnMovingToOther);
+		rdbtnMovingToOther.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ie){
+            	commentPane.setVisible(false);
+            }
+        });
+		
+		rdbtnAnyOtherReason = new JRadioButton("Any Other Reason");
+		rdbtnAnyOtherReason.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		rdbtnAnyOtherReason.setBackground(Color.GRAY);
+		rdbtnAnyOtherReason.setBounds(55, 314, 155, 27);
+		panelDeactivate.add(rdbtnAnyOtherReason);
+		rdbtnAnyOtherReason.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ie){
+            	commentPane.setVisible(true);
+            }
+        });
+		
+		rdbtnNotUsefull = new JRadioButton("Not Usefull");
+		rdbtnNotUsefull.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		rdbtnNotUsefull.setBackground(Color.GRAY);
+		rdbtnNotUsefull.setBounds(55, 254, 145, 27);
+		panelDeactivate.add(rdbtnNotUsefull);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		rdbtnNotUsefull.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ie){
+            	commentPane.setVisible(false);
+            }
+        });
+		
+		group.add(rdbtnMovingToOther);
+        group.add(rdbtnAnyOtherReason);
+        group.add(rdbtnNotUsefull);
 		
 		frame.setUndecorated(true);
 		frame.setVisible(true);
