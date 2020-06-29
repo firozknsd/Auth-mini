@@ -119,12 +119,16 @@ public class Login implements ActionListener {
 			if(!email.equals("") && !password.equals("")) {
 				if(ArrayList.get(index).getStatus().equals("Deactivate")) {
 					new JOptionPane().showMessageDialog(panelLogin,"Account not found.");
-				} else {
-					if(ArrayList.get(index).getEmail().equals(email) &&  ArrayList.get(index).getPassword().equals(password) && ArrayList.get(index).getStatus().equals("Active")) {
+				} else if(ArrayList.get(index).getStatus().equals("Active")) {
+					if(ArrayList.get(index).getEmail().equals(email) &&  ArrayList.get(index).getPassword().equals(password)) {
 						frame.setVisible(false);
 						new Welcome(role);
 					} else {
-						new JOptionPane().showMessageDialog(panelLogin,"User name OR password is wrong");
+						if(!ArrayList.get(index).getEmail().equals(email)) {
+							new JOptionPane().showMessageDialog(panelLogin,"Account Not Found !");
+						} else {
+							new JOptionPane().showMessageDialog(panelLogin,"User name OR password is wrong");
+						}
 					}
 				}
 			} else if(email.equals("")) {
