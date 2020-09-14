@@ -72,7 +72,6 @@ public class SignUp extends AbstractFormatter implements ActionListener {
 	private final DateChooserPanelBeanInfo dateChooserPanelBeanInfo = new DateChooserPanelBeanInfo();
 	private SpringLayout springLayout;
 	private ButtonGroup buttonGroup;
-	//operations.delete(8);
 	public SignUp() {
 		initialize();
 	}
@@ -259,7 +258,7 @@ public class SignUp extends AbstractFormatter implements ActionListener {
 					UserDAO userDao = new UserDAO();
 					int id = userDao.insert(new User(firstName,lastName,gender,dob,phone,email,password,status,role,remark));
 					if(id!=0) {
-						new JOptionPane().showMessageDialog(panelInfo,"Successfully Sigh Up...!");
+						new JOptionPane().showMessageDialog(panelInfo,"Successfully SignUp...!");
 						frame.setVisible(false);
 						new Login();
 					}

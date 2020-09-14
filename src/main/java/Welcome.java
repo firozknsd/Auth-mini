@@ -353,12 +353,10 @@ public class Welcome implements MouseListener,ActionListener {
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
@@ -388,7 +386,7 @@ public class Welcome implements MouseListener,ActionListener {
 					txtNewPassword.setText("");
 					txtConfirmPassword.setText("");
 				} else {
-					new JOptionPane().showMessageDialog(panelChange,"New password did not match!!");
+					new JOptionPane().showMessageDialog(panelChange,"New password did not match with confirm password !!");
 				} 
 			} else {
 				new JOptionPane().showMessageDialog(panelChange,"Current password is not correct...!");
@@ -435,10 +433,11 @@ public class Welcome implements MouseListener,ActionListener {
 			ArrayList<User> arrayList = (ArrayList<User>) userDao.list();
 			
 			if(table.getSelectedRow()>1) {
-				int flag = new JOptionPane().showConfirmDialog(panelUserList,"Are you sure you went to delete this record...?");
+				int flag = new JOptionPane().showConfirmDialog(null,"Are you sure you went to delete this record ", "choose one", JOptionPane.YES_NO_OPTION);
 				if(flag==0) {
 					userDao.delete(arrayList.get(table.getSelectedRow()).getId());
 					new JOptionPane().showMessageDialog(panelUserList,"Successfully deleted.");
+					initialize("Admin");
 				}
 			} else if(table.getSelectedRow()+1==1) {
 				new JOptionPane().showMessageDialog(panelUserList,"Restricted Record..!");

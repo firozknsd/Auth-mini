@@ -124,11 +124,7 @@ public class Login implements ActionListener {
 						frame.setVisible(false);
 						new Welcome(role);
 					} else {
-						if(!ArrayList.get(index).getEmail().equals(email)) {
-							new JOptionPane().showMessageDialog(panelLogin,"Account Not Found !");
-						} else {
-							new JOptionPane().showMessageDialog(panelLogin,"User name OR password is wrong");
-						}
+						new JOptionPane().showMessageDialog(panelLogin,"User name OR password is wrong");
 					}
 				}
 			} else if(email.equals("")) {
